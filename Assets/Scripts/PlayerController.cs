@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 
     public Rigidbody head;
 
+    public Animator bodyAnimator;
+
     //Lets us decide what layers to hit
     public LayerMask layerMask;
     //this dictates where the marine will look
@@ -55,11 +57,12 @@ public class PlayerController : MonoBehaviour
 
         if(moveDirection == Vector3.zero)
         {
-            //TODO
+            bodyAnimator.SetBool("IsMoving", false);
         }
         else
         {
             head.AddForce(transform.right * 150, ForceMode.Acceleration);
+            bodyAnimator.SetBool("IsMoving", true);
         }
         
         //creates an empty raycast
