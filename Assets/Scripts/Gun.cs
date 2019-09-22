@@ -8,7 +8,7 @@ public class Gun : MonoBehaviour
     public GameObject bulletPrefab;
     //will be set to the positon of the marine's gun
     public Transform launchPosition;
-
+    private AudioSource audioSource;
 
     void fireBullet()
     {
@@ -18,14 +18,18 @@ public class Gun : MonoBehaviour
         bullet.transform.position = launchPosition.position;
         //sets the speed of the bullet as well as makes sure it fires in the direction the player is facing
         bullet.GetComponent<Rigidbody>().velocity = transform.parent.forward * 100;
+        //allows the same sound effect to play multiple times
+        audioSource.PlayOneShot(SoundManager.Instance.gunFire);
     }
-     
+
+
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -50,4 +54,5 @@ public class Gun : MonoBehaviour
 
 
     }
+
 }
