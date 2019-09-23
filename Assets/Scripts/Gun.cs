@@ -10,17 +10,7 @@ public class Gun : MonoBehaviour
     public Transform launchPosition;
     private AudioSource audioSource;
 
-    void fireBullet()
-    {
-        //creates a bullet based on the bullet prefab
-        GameObject bullet = Instantiate(bulletPrefab) as GameObject;
-        //sets the bullets position as the launchers position
-        bullet.transform.position = launchPosition.position;
-        //sets the speed of the bullet as well as makes sure it fires in the direction the player is facing
-        bullet.GetComponent<Rigidbody>().velocity = transform.parent.forward * 100;
-        //allows the same sound effect to play multiple times
-        audioSource.PlayOneShot(SoundManager.Instance.gunFire);
-    }
+  
 
 
 
@@ -53,6 +43,18 @@ public class Gun : MonoBehaviour
         }
 
 
+    }
+
+    void fireBullet()
+    {
+        //creates a bullet based on the bullet prefab
+        GameObject bullet = Instantiate(bulletPrefab) as GameObject;
+        //sets the bullets position as the launchers position
+        bullet.transform.position = launchPosition.position;
+        //sets the speed of the bullet as well as makes sure it fires in the direction the player is facing
+        bullet.GetComponent<Rigidbody>().velocity = transform.parent.forward * 100;
+        //allows the same sound effect to play multiple times
+        audioSource.PlayOneShot(SoundManager.Instance.gunFire);
     }
 
 }

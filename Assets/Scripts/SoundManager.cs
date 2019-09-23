@@ -21,7 +21,7 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         //Ensures that there is only one copy
-        if(Instance = null)
+        if(Instance == null)
         {
             Instance = this;
         }else if (Instance != this)
