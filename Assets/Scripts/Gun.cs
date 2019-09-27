@@ -33,7 +33,7 @@ public class Gun : MonoBehaviour
             //checks if fire bullet is being invoked
             if(!IsInvoking("fireBullet"))
             {
-                //repeatedly calls a method till Cancelinvoke is called
+                //repeatedly calls a method till Cancel invoke is called
                 InvokeRepeating("fireBullet", 0f, 0.1f);
             }
         }
@@ -44,6 +44,11 @@ public class Gun : MonoBehaviour
             CancelInvoke("fireBullet");
         }
 
+        currentTime += Time.deltaTime;
+        if(currentTime > upgradeTime && isUpgraded == true)
+        {
+            isUpgraded = false;
+        }
 
     }
 
@@ -81,6 +86,8 @@ public class Gun : MonoBehaviour
             Rigidbody bullet3 = createBullet();
             bullet3.velocity =
                 ((transform.right * -1) + transform.forward / 0.5f) * 100;
+
+
         }
         
         if(isUpgraded)

@@ -26,14 +26,21 @@ public class GameManager : MonoBehaviour
     //track the millisecond since the last spawn
     private float currentSpawnTime = 0;
 
-    public 
+    public GameObject upgradePrefab;
+    public Gun gun;
+    public float upgradeMaxTimeSpawn = 7.5f;
+
+    private bool spawnedUpgrade = false;
+    private float actualUpgradeTime = 0f;
+    private float currentUpgradeTime = 0;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        actualUpgradeTime = Random.Range(upgradeMaxTimeSpawn = 3.0f, upgradeMaxTimeSpawn);
+        actualUpgradeTime = Mathf.Abs(actualUpgradeTime);
     }
 
     // Update is called once per frame
@@ -41,6 +48,7 @@ public class GameManager : MonoBehaviour
     {
         //accumulates time that passed between each frame
         currentSpawnTime += Time.deltaTime;
+        currentUpgradeTime += Time.deltaTime;
 
         if(currentSpawnTime > generatedSpawnTime)
         {
@@ -97,8 +105,21 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-       
-
+       //Spawns the upgrades on the map
+        if(currentUpgradeTime > actualUpgradeTime)
+        {
+            if(!spawnedUpgrade)
+            {
+                int randomNumber = Random.Range(0, spawnPoints.Length - 1);
+                GameObject spawnLocation = spawnPoints[randomNumber];
+                GameObject upgrade = Instantiate(upgradePrefab) as GameObject;
+                Upgrade upgradeScript = upgrade.GetComponent<Upgrade>();
+                upgradeScript.gun = gun;
+                upgrade.transform.position = spawnLocation.transform.position;
+                spawnedUpgrade = true;
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.powerUpAppear);
+            }
+        }
 
     }
 }
