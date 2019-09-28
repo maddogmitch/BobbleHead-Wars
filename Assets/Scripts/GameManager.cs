@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour
                         Vector3 targetRoatation = new Vector3(player.transform.position.x,
                             newAlien.transform.position.y, player.transform.position.z);
                         newAlien.transform.LookAt(targetRoatation);
+                        alienScript.OnDestroy.AddListener(AlienDestroyed);
                     }
                 }
             }
@@ -121,5 +122,11 @@ public class GameManager : MonoBehaviour
             }
         }
 
+    }
+    //lets the game manager get notified of the dead alien
+    public void AlienDestroyed()
+    {
+        aliensOnScreen -= 1;
+        totalAliens -= 1;
     }
 }

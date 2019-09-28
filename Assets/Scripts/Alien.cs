@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Alien : MonoBehaviour
 {
@@ -13,6 +14,16 @@ public class Alien : MonoBehaviour
     public float navigationUpdate;
     //this tracks how much time has passed since the previous update
     private float navigationTime = 0;
+    //Called each time to an alien
+    public UnityEvent OnDestroy;
+
+    //Destroys the alien
+    public void Die()
+    {
+        OnDestroy.Invoke();
+        OnDestroy.RemoveAllListeners();
+        Destroy(gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +54,6 @@ public class Alien : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDeath);
-        Destroy(gameObject);
+        Die();
     }
 }
