@@ -50,6 +50,11 @@ public class GameManager : MonoBehaviour
         currentSpawnTime += Time.deltaTime;
         currentUpgradeTime += Time.deltaTime;
 
+        if(player == null)
+        {
+            return;
+        }
+
         if(currentSpawnTime > generatedSpawnTime)
         {
             currentSpawnTime = 0;

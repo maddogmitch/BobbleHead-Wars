@@ -6,6 +6,19 @@ public class PlayerController : MonoBehaviour
 {
     //move speed of the character
     public float moveSpeed = 50.0f;
+    //An array of force for the camera
+    public float[] hitforce;
+    //grace peroid between hits
+    public float timeBetweenHits = 2.5f;
+    //indicates the hero was hit
+    private bool isHit = false;
+    //tracks amount of time in grace peroid
+    private float timeSinceHit = 0;
+    //refers to number of time it is hit
+    private int hitNumber = -1;
+
+    public Rigidbody marineBody;
+    private bool isDead = false;
 
     public Rigidbody head;
 
@@ -46,6 +59,15 @@ public class PlayerController : MonoBehaviour
             0, Input.GetAxis("Vertical"));
         characterController.SimpleMove(moveDirection * moveSpeed);
 
+       if(isHit)
+        {
+            timeSinceHit += Time.deltaTime;
+            if(timeSinceHit > timeBetweenHits)
+            {
+                isHit = false;
+                timeSinceHit = 0;
+            }
+        }
     }
 
     //Calls updates at a fixed interval
@@ -90,5 +112,45 @@ public class PlayerController : MonoBehaviour
         //Does the actuall turn using lerp
         transform.rotation = Quaternion.Lerp(transform.rotation,
             rotation, Time.deltaTime * 10.0f);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        Alien alien = other.gameObject.GetComponent<Alien>();
+        if(alien != null)
+        {//Checks if colliding object is an alien
+            if(!isHit)
+            {
+                hitNumber += 1;
+                CameraShake cameraShake = Camera.main.GetComponent<CameraShake>();
+                if(hitNumber < hitforce.Length) //if hit number is less than force than hero is still alive
+                {
+                    cameraShake.intensity = hitforce[hitNumber];
+                    cameraShake.Shake();
+                }
+                else
+                {
+                    Die();
+                }
+                isHit = true;//sets is hit to true to play the hurt sound
+                SoundManager.Instance.PlayOneShot(SoundManager.Instance.hurt);
+            }
+            alien.Die();
+        }
+    }
+
+    public void Die()
+    {
+        bodyAnimator.SetBool("IsMoving", false);
+        marineBody.transform.parent = null;
+        marineBody.isKinematic = false;
+        marineBody.useGravity = true;
+        marineBody.gameObject.GetComponent<CapsuleCollider>().enabled = true;
+        marineBody.gameObject.GetComponent<Gun>().enabled = false;
+        Destroy(head.gameObject.GetComponent<HingeJoint>());
+        head.transform.parent = null;
+        head.useGravity = true;
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.marineDeath);
+        Destroy(gameObject);
     }
 }
