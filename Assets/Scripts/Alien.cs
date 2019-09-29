@@ -16,12 +16,23 @@ public class Alien : MonoBehaviour
     private float navigationTime = 0;
     //Called each time to an alien
     public UnityEvent OnDestroy;
+    public Rigidbody head;
+    public bool isAlive = true;
 
     //Destroys the alien
     public void Die()
     {
+        isAlive = false;
+        head.GetComponent<Animator>().enabled = false;
+        head.isKinematic = false;
+        head.useGravity = true;
+        head.GetComponent<SphereCollider>().enabled = true;
+        head.gameObject.transform.parent = null;
+        head.velocity = new Vector3(0, 26.0f, 3.0f);
         OnDestroy.Invoke();
         OnDestroy.RemoveAllListeners();
+        SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDeath);
+        head.GetComponent<SelfDestruct>().Initiate();
         Destroy(gameObject);
     }
 
@@ -41,11 +52,14 @@ public class Alien : MonoBehaviour
             //agent.destination = target.position;
 
             //checks if a certain amount of time has passed than updates the path
-            navigationTime += Time.deltaTime;
-            if(navigationTime > navigationUpdate)
+            if (isAlive)
             {
-                agent.destination = target.position;
-                navigationTime = 0;
+                navigationTime += Time.deltaTime;
+                if (navigationTime > navigationUpdate)
+                {
+                    agent.destination = target.position;
+                    navigationTime = 0;
+                }
             }
         }
        
@@ -53,7 +67,10 @@ public class Alien : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDeath);
-        Die();
+        if (isAlive)
+        {
+            Die();
+            SoundManager.Instance.PlayOneShot(SoundManager.Instance.alienDeath);
+        }
     }
 }
